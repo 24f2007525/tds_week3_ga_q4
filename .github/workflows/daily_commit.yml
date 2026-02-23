@@ -1,0 +1,30 @@
+name: Daily Commit Workflow
+
+on:
+  schedule:
+    # Specific hours (4) and specific minutes (30) - No wildcards for time
+    - cron: '30 4 * * *'
+  workflow_dispatch:
+
+jobs:
+  make-daily-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step name includes your specific email address
+      - name: Process update for 24f2007525@ds.study.iitm.ac.in
+        run: |
+          echo "Automated update on $(date)" >> activity_log.txt
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add activity_log.txt
+          git commit -m "Daily automated commit: $(date +'%Y-%m-%d %H:%M')"
+          git push
